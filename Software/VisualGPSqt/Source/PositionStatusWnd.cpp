@@ -96,10 +96,10 @@ void CPositionStatusWnd::paintEvent(QPaintEvent */*event*/){
                 "%8 Km/h\n"
                 "%9\n"
                 "%10\n"
-                ).arg(rmcData.m_nHour, 2, 10, QChar('0'))
-                .arg(rmcData.m_nMinute, 2, 10, QChar('0'))
-                .arg(rmcData.m_nSecond, 2, 10, QChar('0'))
-                .arg(rmcData.m_nMillisecond, 2, 10, QChar('0'))
+                ).arg(ggaData.m_nHour, 2, 10, QChar('0'))
+                .arg(ggaData.m_nMinute, 2, 10, QChar('0'))
+                .arg(ggaData.m_nSecond, 2, 10, QChar('0'))
+                .arg(ggaData.m_nMillisecond, 2, 10, QChar('0'))
                 .arg(ggaData.m_dLatitude, 0, 'f', 8, QChar('0'))
                 .arg(ggaData.m_dLongitude, 0, 'f', 8, QChar('0'))
                 .arg(ggaData.m_dAltitudeMSL, 0, 'f', 4, QChar('0'))
