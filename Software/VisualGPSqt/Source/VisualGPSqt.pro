@@ -32,7 +32,10 @@ SOURCES += main.cpp\
     ../../NMEAParser/Software/NMEAParserLib/NMEASentenceGGA.cpp \
     ../../NMEAParser/Software/NMEAParserLib/NMEASentenceGSA.cpp \
     ../../NMEAParser/Software/NMEAParserLib/NMEASentenceGSV.cpp \
-    ../../NMEAParser/Software/NMEAParserLib/NMEASentenceRMC.cpp
+    ../../NMEAParser/Software/NMEAParserLib/NMEASentenceRMC.cpp \
+    ../../NMEAParser/Software/NMEAParserLib/NMEASentenceGLL.cpp \
+    ../../NMEAParser/Software/NMEAParserLib/NMEASentenceVTG.cpp \
+    ../../NMEAParser/Software/NMEAParserLib/NMEASentenceZDA.cpp \
 
 HEADERS  += MainWindow.h \
     NMEAParserQt.h \
@@ -50,7 +53,10 @@ HEADERS  += MainWindow.h \
     ../../NMEAParser/Software/NMEAParserLib/NMEASentenceGGA.h \
     ../../NMEAParser/Software/NMEAParserLib/NMEASentenceGSA.h \
     ../../NMEAParser/Software/NMEAParserLib/NMEASentenceGSV.h \
-    ../../NMEAParser/Software/NMEAParserLib/NMEASentenceRMC.h
+    ../../NMEAParser/Software/NMEAParserLib/NMEASentenceRMC.h \
+    ../../NMEAParser/Software/NMEAParserLib/NMEASentenceGLL.h \
+    ../../NMEAParser/Software/NMEAParserLib/NMEASentenceVTG.h \
+    ../../NMEAParser/Software/NMEAParserLib/NMEASentenceZDA.h \
 
 INCLUDEPATH += ../../NMEAParser/Software/NMEAParserLib
 
