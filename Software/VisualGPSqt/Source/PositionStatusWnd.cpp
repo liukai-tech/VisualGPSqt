@@ -77,24 +77,36 @@ void CPositionStatusWnd::paintEvent(QPaintEvent */*event*/){
     }
 
     QString str =
-            "Latitude:  \n"
-            "Longitude: \n"
-            "Altitude:  \n"
-            "Speed:     \n"
-            ;
-    painter.drawText(rcDraw, str);
-    QRectF rcTextBounds = painter.boundingRect(rcDraw, Qt::AlignLeft, str);
+                "UTC:\n"
+                "Latitude:  \n"
+                "Longitude: \n"
+                "Altitude:  \n"
+                "Speed:     \n"
+                "Quality:   \n"
+                "SatsInView:\n"
+                ;
+        painter.drawText(rcDraw, str);
+        QRectF rcTextBounds = painter.boundingRect(rcDraw, Qt::AlignLeft, str);
 
-    str = QString(
-            "%1 \n"
-            "%2\n"
-            "%3\n"
-            "%4 Kts"
-            ).arg(ggaData.m_dLatitude)
-            .arg(ggaData.m_dLongitude)
-            .arg(ggaData.m_dAltitudeMSL)
-            .arg(rmcData.m_dSpeedKnots)
-            ;
+        str = QString(
+                "%1:%2:%3.%4\n"
+                "%5\n"
+                "%6\n"
+                "%7\n"
+                "%8 Km/h\n"
+                "%9\n"
+                "%10\n"
+                ).arg(rmcData.m_nHour, 2, 10, QChar('0'))
+                .arg(rmcData.m_nMinute, 2, 10, QChar('0'))
+                .arg(rmcData.m_nSecond, 2, 10, QChar('0'))
+                .arg(rmcData.m_nMillisecond, 2, 10, QChar('0'))
+                .arg(ggaData.m_dLatitude, 0, 'f', 8, QChar('0'))
+                .arg(ggaData.m_dLongitude, 0, 'f', 8, QChar('0'))
+                .arg(ggaData.m_dAltitudeMSL, 0, 'f', 4, QChar('0'))
+                .arg(rmcData.m_dSpeedKm, 0, 'f', 3, QChar('0'))
+                .arg(ggaData.m_nGPSQuality)
+                .arg(ggaData.m_nSatsInView)
+                ;
     rcTextBounds.setLeft(rcTextBounds.right() + fontMetrics.averageCharWidth());
     rcTextBounds.setRight(rcDraw.right());
     painter.drawText(rcTextBounds, str);
