@@ -166,6 +166,10 @@ void CAzimuthElevationWnd::ConsolidateSatData(std::map <int, SAT_INFO_T>&mapSatD
     m_pNMEAParser->GetGLGSA(glgsaData);
     m_pNMEAParser->GetGLGSV(glgsvData);
 
+    //BD(add by Caesar in 2020/04/01)
+    CNMEAParserData::GSV_DATA_T bdgsvData;
+    m_pNMEAParser->GetBDGSV(bdgsvData);
+
     // GPS
     SAT_INFO_T satInfo;
     for(int i = 0; i < CNMEAParserData::c_nMaxGSASats; i++) {
@@ -214,6 +218,14 @@ void CAzimuthElevationWnd::ConsolidateSatData(std::map <int, SAT_INFO_T>&mapSatD
             mapSatData[glgsvData.SatInfo[i].nPRN].nPRN = glgsvData.SatInfo[i].nPRN;
             mapSatData[glgsvData.SatInfo[i].nPRN].nAzimuth = (int)glgsvData.SatInfo[i].dAzimuth;
             mapSatData[glgsvData.SatInfo[i].nPRN].nElevation = (int)glgsvData.SatInfo[i].dElevation;
+        }
+
+        // BD(add by Caesar in 2020/04/01)
+        if(bdgsvData.SatInfo[i].nPRN != CNMEAParserData::c_nInvlidPRN) {
+            mapSatData[bdgsvData.SatInfo[i].nPRN].nSNR = bdgsvData.SatInfo[i].nSNR;
+            mapSatData[bdgsvData.SatInfo[i].nPRN].nPRN = bdgsvData.SatInfo[i].nPRN;
+            mapSatData[bdgsvData.SatInfo[i].nPRN].nAzimuth = (int)bdgsvData.SatInfo[i].dAzimuth;
+            mapSatData[bdgsvData.SatInfo[i].nPRN].nElevation = (int)bdgsvData.SatInfo[i].dElevation;
         }
     }
 }
