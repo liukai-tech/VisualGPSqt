@@ -31,6 +31,7 @@
 #include "ConnectDlg.h"
 #include "AboutDlg.h"
 #include "GPSStatusWnd.h"
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -45,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QCoreApplication::setApplicationName("VisualGPSqt");
 
     CreateWidgets();
+
+    connect(this, SIGNAL(ClearDataStreamHistory()), m_pDateStreamWnd, SLOT(OnClearDataStreamHistory()));
 
     //
     // Create LEDs in the status bar
@@ -108,6 +111,8 @@ void MainWindow::CreateWidgets(){
     CGPSStatusWnd *pStatusWnd = new CGPSStatusWnd(&m_NMEAParser); // do not add parent
     m_pTabMain->addTab(pStatusWnd, "GPS Status");
 
+    m_pDateStreamWnd = new CGPSDataStreamWnd(&m_NMEAParser); // do not add parent
+    m_pTabMain->addTab(m_pDateStreamWnd, "Data Stream");
     //QVBoxLayout *pTabLayout = new QVBoxLayout(this);
     //m_pTabMain->setLayout(this);
 }
@@ -124,4 +129,33 @@ void MainWindow::on_actionConnect_using_File_triggered()
         m_NMEAParser.ConnectUsingFile(fileName);
     }
 
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    QString path = QFileDialog::getSaveFileName(this,
+                                                tr("Save File"),
+                                                ".",
+                                                tr("Text Files(*.txt)"));
+    if(!path.isEmpty()) {
+        QFile file(path);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QMessageBox::warning(this, tr("Write File"),
+                                 tr("Cannot open file:\n%1").arg(path));
+            return;
+        }
+        QTextStream out(&file);
+        out << m_pDateStreamWnd->GetTextBrowser()->toPlainText();
+        file.close();
+    } else {
+        QMessageBox::warning(this, tr("Path"),
+                             tr("You did not select any file."));
+    }
+}
+
+void MainWindow::on_actionClear_triggered()
+{
+    m_NMEAParser.ResetData();
+    emit m_NMEAParser.NewPositionUpdateGPS();
+    emit ClearDataStreamHistory();
 }

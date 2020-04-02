@@ -17,6 +17,7 @@ RC_FILE = VisualGPSQt.rc
 ICON = Resources/icon.icns
 
 SOURCES += main.cpp\
+    GPSDataStreamWnd.cpp \
         MainWindow.cpp \
     NMEAParserQt.cpp \
     ConnectDlg.cpp \
@@ -38,6 +39,7 @@ SOURCES += main.cpp\
     ../../NMEAParser/Software/NMEAParserLib/NMEASentenceZDA.cpp \
 
 HEADERS  += MainWindow.h \
+    GPSDataStreamWnd.h \
     NMEAParserQt.h \
     ConnectDlg.h \
     AboutDlg.h \

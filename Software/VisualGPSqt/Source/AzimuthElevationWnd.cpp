@@ -220,7 +220,7 @@ void CAzimuthElevationWnd::ConsolidateSatData(std::map <int, SAT_INFO_T>&mapSatD
             mapSatData[glgsvData.SatInfo[i].nPRN].nElevation = (int)glgsvData.SatInfo[i].dElevation;
         }
 
-        // BD(add by Caesar in 2020/04/01)
+        // BeiDou(add by Caesar in 2020/04/01)
         if(bdgsvData.SatInfo[i].nPRN != CNMEAParserData::c_nInvlidPRN) {
             mapSatData[bdgsvData.SatInfo[i].nPRN].nSNR = bdgsvData.SatInfo[i].nSNR;
             mapSatData[bdgsvData.SatInfo[i].nPRN].nPRN = bdgsvData.SatInfo[i].nPRN;

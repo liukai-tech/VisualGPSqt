@@ -55,6 +55,7 @@ public:
 signals:
     void NewPositionUpdateGPS();
     void MessageProcessed();
+    void NewMessageUpdateGPS(QByteArray &);
 
 public slots:
     void on_SerialPortReadyRead();

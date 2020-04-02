@@ -37,7 +37,9 @@ CPositionStatusWnd::CPositionStatusWnd(CNMEAParserQt *pNMEAParser, QWidget *pare
 void CPositionStatusWnd::paintEvent(QPaintEvent */*event*/){
     DrawScreen();
 
-}void CPositionStatusWnd::DrawScreen(){
+}
+
+void CPositionStatusWnd::DrawScreen(){
     QPainter painter(this);
     QPalette pal;
     painter.setRenderHint(QPainter::SmoothPixmapTransform, true );

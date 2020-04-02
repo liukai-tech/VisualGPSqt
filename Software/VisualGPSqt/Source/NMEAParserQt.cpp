@@ -86,6 +86,17 @@ void CNMEAParserQt::OnNmeaReadFileTimer() {
             qint64 uBytesRead = m_pReadNmeaFile->read(pData, 512    );
             if(uBytesRead > 0) {
                 ProcessNMEABuffer(pData, static_cast<size_t>(uBytesRead));
+                //QString string = QString::fromUtf8(pData);
+                //QByteArray array = string.toLatin1();
+
+                //QByteArray array = QByteArray((const char*)pData, uBytesRead);
+
+                QByteArray array;
+                array.resize(uBytesRead);
+                for(int i = 0; i < uBytesRead; i++){
+                    array[i] = pData[i];
+                }
+                emit NewMessageUpdateGPS(array);
             }
         }
         // No nore data to read, now close the file
@@ -118,7 +129,8 @@ void CNMEAParserQt::on_SerialPortReadyRead()
     QByteArray array = m_SerialPort.readAll();
     //qDebug() << "Received" << array.count() << "bytes...";
 
-    if(array.size() > 0){
+    if(array.size() > 0){      
+        emit NewMessageUpdateGPS(array);
         ProcessNMEABuffer(array.data(), static_cast<size_t>(array.size()));
 
     }

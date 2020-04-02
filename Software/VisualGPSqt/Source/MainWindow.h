@@ -29,6 +29,7 @@
 #include <QSettings>
 #include "NMEAParserQt.h"
 #include "LEDWnd.h"
+#include "GPSDataStreamWnd.h"
 
 namespace Ui {
 class MainWindow;
@@ -44,9 +45,14 @@ class MainWindow : public QMainWindow
     CLEDWnd *               m_pTxLed;               ///< Transmit LED
     CLEDWnd *               m_pRxLed;               ///< Receive LED
 
+    CGPSDataStreamWnd *     m_pDateStreamWnd;        ///< Data Stream Windows
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+signals:
+    void ClearDataStreamHistory();
 
 private slots:
     void on_action_Connect_triggered();
@@ -55,6 +61,10 @@ private slots:
     void OnNMEAMessageProcessed();
     void on_actionConnect_using_File_triggered();
 
+    void on_actionSave_triggered();
+    
+    void on_actionClear_triggered();
+    
 private:
     Ui::MainWindow *ui;
     void CreateWidgets();
