@@ -1,7 +1,7 @@
 ﻿/*
 * MIT License
 *
-*  Copyright (c) 2018 VisualGPS, LLC
+*  Copyright (c) 2020 Caesar(792910363@qq.com)
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
 *  of this software and associated documentation files (the "Software"), to deal
@@ -22,41 +22,35 @@
 *  SOFTWARE.
 *
 */
-#include <QtCore>
-#include <QtGui>
-#include "PositionStatusWnd.h"
-#include "NMEAParserQt.h"
+#include "GPSPlotWnd.h"
+#include <QPushButton>
+#include <QSplitter>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include "NMEACalculate.h"
 
-CPositionStatusWnd::CPositionStatusWnd(CNMEAParserQt *pNMEAParser, QWidget *parent) :
+CGPSPlotWnd::CGPSPlotWnd(CNMEAParserQt *pNMEAParser, QWidget *parent) :
     QWidget(parent),
     m_pNMEAParser(pNMEAParser)
 {
+    CreateWidgets();
     connect(pNMEAParser, SIGNAL(NewPositionUpdateGPS()), SLOT(OnNewPositionUpdateGPS()));
 }
 
-void CPositionStatusWnd::paintEvent(QPaintEvent */*event*/){
-    DrawScreen();
-
+CGPSPlotWnd::~CGPSPlotWnd(){
+    delete  m_pCustomPlot;
 }
 
-void CPositionStatusWnd::DrawScreen(){
-    QPainter painter(this);
-    QPalette pal;
-    painter.setRenderHint(QPainter::SmoothPixmapTransform, true );
+void CGPSPlotWnd::CreateWidgets() {
 
-    //
-    // Scale the text based on width
-    int nSize = (int)( width() * 0.06 );
-    QFont Font("Helvetica [Cronyx]", nSize);
-    painter.setFont(Font);
-    QFontMetrics fontMetrics(Font);
+    m_pCustomPlot = new QCustomPlot(this);
 
-    painter.setPen(QPalette::WindowText);
-    painter.setBrush(pal.color(QPalette::Base));
+    m_pCustomPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);/*  可使用鼠标进行缩放 */
+    m_pCustomPlot->setGeometry(QRect(0,0,width(),height()));
+}
 
-    QRectF rcDraw(0, 0, width(), height());
-
+void CGPSPlotWnd::OnNewPositionUpdateGPS()
+{
     //
     // Draw up position status
     //
@@ -73,7 +67,6 @@ void CPositionStatusWnd::DrawScreen(){
         m_pNMEAParser->GetGAGGA(ggaData);
     }
 
-#if 0
     //lla2ecef(if gps quality not equip zero)
     if(ggaData.m_nGPSQuality != 0){
         double pos[3],xyz[3];
@@ -90,55 +83,64 @@ void CPositionStatusWnd::DrawScreen(){
                 .arg(xyz[2], 0, 'f', 4, QChar('0'))
                 ;
         qDebug() << ecefstr;
+        Position_Data_Preprocess(xyz[0], xyz[1]);
     }
-#endif
-
-    CNMEAParserData::RMC_DATA_T rmcData;
-    m_pNMEAParser->GetGPRMC(rmcData);
-    if(rmcData.m_dLatitude == 0.0 && rmcData.m_dLongitude == 0.0 && rmcData.m_dLatitude == 0.0) {
-        m_pNMEAParser->GetGNRMC(rmcData);
-    }
-
-    QString str =
-                "UTC:\n"
-                "Latitude:  \n"
-                "Longitude: \n"
-                "Altitude:  \n"
-                "Speed:     \n"
-                "Quality:   \n"
-                "SatsInView:\n"
-                ;
-        painter.drawText(rcDraw, str);
-        QRectF rcTextBounds = painter.boundingRect(rcDraw, Qt::AlignLeft, str);
-
-        str = QString(
-                "%1:%2:%3.%4\n"
-                "%5\n"
-                "%6\n"
-                "%7\n"
-                "%8 Km/h\n"
-                "%9\n"
-                "%10\n"
-                ).arg(ggaData.m_nHour, 2, 10, QChar('0'))
-                .arg(ggaData.m_nMinute, 2, 10, QChar('0'))
-                .arg(ggaData.m_nSecond, 2, 10, QChar('0'))
-                .arg(ggaData.m_nMillisecond, 2, 10, QChar('0'))
-                .arg(ggaData.m_dLatitude, 0, 'f', 8, QChar('0'))
-                .arg(ggaData.m_dLongitude, 0, 'f', 8, QChar('0'))
-                .arg(ggaData.m_dAltitudeMSL, 0, 'f', 4, QChar('0'))
-                .arg(rmcData.m_dSpeedKm, 0, 'f', 3, QChar('0'))
-                .arg(ggaData.m_nGPSQuality)
-                .arg(ggaData.m_nSatsInView)
-                ;
-    rcTextBounds.setLeft(rcTextBounds.right() + fontMetrics.averageCharWidth());
-    rcTextBounds.setRight(rcDraw.right());
-    painter.drawText(rcTextBounds, str);
 }
 
-QSize CPositionStatusWnd::sizeHint() const {
-    return QSize(200,200);
+void CGPSPlotWnd::resizeEvent(QResizeEvent */*event*/)
+{
+    m_pCustomPlot->setGeometry(QRect(0,0,width(),height()));
+}
+/*
+QSize CGPSDataStreamWnd::sizeHint () const{
+    return QSize(300, 200);
+}
+*/
+
+void CGPSPlotWnd::OnClearPlotHistory()
+{
+    last_index = 0;
+    display_x.clear();
+    display_y.clear();
+    m_pCustomPlot->removeGraph(0);
 }
 
-void CPositionStatusWnd::OnNewPositionUpdateGPS() {
-    repaint();
+//数据准备
+void CGPSPlotWnd::Position_Data_Preprocess(double x, double y)
+{
+    //y轴的显示范围最大为65535，该值可以根据传感器的取值范围做调整
+//    if( y < 65536 && y > 1 && x > 1)
+    {
+        display_x.append(x);
+        display_y.append(y);
+        if(display_x.size()> 1)
+        {
+            Position_Draw_Plot(m_pCustomPlot,display_x,display_y);
+        }
+        if(display_x.size() == 1)
+        {
+            m_pCustomPlot->addGraph(0);
+            m_pCustomPlot->xAxis->setRange(display_x.at(0)-0.5,display_x.at(0)+0.5);
+            m_pCustomPlot->yAxis->setRange(display_y.at(0)-0.5,display_y.at(0)+0.5);
+        }
+    }
+}
+
+//曲线绘制
+void CGPSPlotWnd::Position_Draw_Plot(QCustomPlot *customPlot, QVector<double> x, QVector<double> y)
+{
+    customPlot->graph(0)->setData(x, y);
+    //设置坐标轴自适应
+    customPlot->graph(0)->rescaleAxes(true);
+    //设置Y轴
+    customPlot->graph(0)->rescaleValueAxis(true);
+    //设置X轴
+    customPlot->graph(0)->rescaleKeyAxis(true);
+    //设置四周坐标框
+    customPlot->axisRect()->setupFullAxesBox(true);
+    //设置线型
+    //customPlot->graph(0)->setLineStyle(QCPGraph::lsNone);/* 无连线 */
+    customPlot->graph(0)->setScatterStyle(QCPScatterStyle::ssTriangle);/* 点型：三角形 */
+    //开始画图
+    customPlot->replot();
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
 * MIT License
 *
 *  Copyright (c) 2018 VisualGPS, LLC
@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     CreateWidgets();
 
     connect(this, SIGNAL(ClearDataStreamHistory()), m_pDateStreamWnd, SLOT(OnClearDataStreamHistory()));
-
+    connect(this, SIGNAL(ClearPlotHistory()), m_pPlotWnd, SLOT(OnClearPlotHistory()));
     //
     // Create LEDs in the status bar
     //
@@ -115,6 +115,9 @@ void MainWindow::CreateWidgets(){
     m_pTabMain->addTab(m_pDateStreamWnd, "Data Stream");
     //QVBoxLayout *pTabLayout = new QVBoxLayout(this);
     //m_pTabMain->setLayout(this);
+
+    m_pPlotWnd = new CGPSPlotWnd(&m_NMEAParser); // do not add parent
+    m_pTabMain->addTab(m_pPlotWnd, "Plot");
 }
 
 void MainWindow::OnNMEAMessageProcessed(){
@@ -158,4 +161,5 @@ void MainWindow::on_actionClear_triggered()
     m_NMEAParser.ResetData();
     emit m_NMEAParser.NewPositionUpdateGPS();
     emit ClearDataStreamHistory();
+    emit ClearPlotHistory();
 }

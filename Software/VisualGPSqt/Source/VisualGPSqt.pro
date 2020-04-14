@@ -7,7 +7,7 @@
 QT       += core gui
 QT       += serialport
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = VisualGPSqt
 TEMPLATE = app
@@ -17,7 +17,9 @@ RC_FILE = VisualGPSQt.rc
 ICON = Resources/icon.icns
 
 SOURCES += main.cpp\
+    ../../NMEAParser/Software/NMEAParserLib/NMEACalculate.cpp \
     GPSDataStreamWnd.cpp \
+    GPSPlotWnd.cpp \
         MainWindow.cpp \
     NMEAParserQt.cpp \
     ConnectDlg.cpp \
@@ -37,9 +39,12 @@ SOURCES += main.cpp\
     ../../NMEAParser/Software/NMEAParserLib/NMEASentenceGLL.cpp \
     ../../NMEAParser/Software/NMEAParserLib/NMEASentenceVTG.cpp \
     ../../NMEAParser/Software/NMEAParserLib/NMEASentenceZDA.cpp \
+    qcustomplot.cpp
 
 HEADERS  += MainWindow.h \
+    ../../NMEAParser/Software/NMEAParserLib/NMEACalculate.h \
     GPSDataStreamWnd.h \
+    GPSPlotWnd.h \
     NMEAParserQt.h \
     ConnectDlg.h \
     AboutDlg.h \
@@ -59,6 +64,7 @@ HEADERS  += MainWindow.h \
     ../../NMEAParser/Software/NMEAParserLib/NMEASentenceGLL.h \
     ../../NMEAParser/Software/NMEAParserLib/NMEASentenceVTG.h \
     ../../NMEAParser/Software/NMEAParserLib/NMEASentenceZDA.h \
+    qcustomplot.h
 
 INCLUDEPATH += ../../NMEAParser/Software/NMEAParserLib
 

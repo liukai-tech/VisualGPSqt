@@ -1,4 +1,4 @@
-/*
+﻿/*
 * MIT License
 *
 *  Copyright (c) 2018 VisualGPS, LLC
@@ -30,6 +30,7 @@
 #include "NMEAParserQt.h"
 #include "LEDWnd.h"
 #include "GPSDataStreamWnd.h"
+#include "GPSPlotWnd.h"
 
 namespace Ui {
 class MainWindow;
@@ -47,12 +48,15 @@ class MainWindow : public QMainWindow
 
     CGPSDataStreamWnd *     m_pDateStreamWnd;        ///< Data Stream Windows
 
+    CGPSPlotWnd *           m_pPlotWnd;             ///< GPS Plot Windows
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
 signals:
     void ClearDataStreamHistory();
+    void ClearPlotHistory();
 
 private slots:
     void on_action_Connect_triggered();
